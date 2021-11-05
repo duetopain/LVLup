@@ -51,8 +51,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="50dp"
-        android:text="@string/StopGPS"
         android:onClick="stopRunning"
+        android:text="@string/StopGPS"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/startGPSButton"
@@ -68,7 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.17"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startGPSButton" />
+        app:layout_constraintTop_toBottomOf="@+id/saveActivityGPSbutton" />
 
     <TextView
         android:id="@+id/timeTextView"
@@ -80,5 +80,14 @@
         app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/averagePaceTextView" />
+
+    <Button
+        android:id="@+id/saveActivityGPSbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/SaveActivity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stopGPSButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
