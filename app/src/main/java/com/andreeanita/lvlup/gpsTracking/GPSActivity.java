@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -55,6 +56,9 @@ public class GPSActivity extends AppCompatActivity {
     private LatLng lastKnownLatLng;
     private static MapFragment mapFragment;
     private LocationCallback locationCallback;
+    private int startPoint;
+    private LatLng prev;
+    private LatLng current;
 
 
     @Override
@@ -73,10 +77,17 @@ public class GPSActivity extends AppCompatActivity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startLocationUpdates();
             }
         });
 
+        btnStop = (Button) findViewById(R.id.stopGPSButton);
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopLocationUpdates();
+            }
+        });
     }
 
 
@@ -109,10 +120,6 @@ public class GPSActivity extends AppCompatActivity {
                                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                                 googleMap.addMarker(markerOptions);
 
-                                PolylineOptions polylineOptions = new PolylineOptions();
-                                polylineOptions.color(Color.RED);
-                                polylineOptions.width(10);
-                                gpsTrack = googleMap.addPolyline(polylineOptions);
                             }
                         });
                     }
@@ -133,13 +140,6 @@ public class GPSActivity extends AppCompatActivity {
         }
     }
 
-    public void startRunning(View v) {
-        startLocationUpdates();
-    }
-
-    public void stopRunning(View v) {
-        stopLocationUpdates();
-    }
 
     protected void startLocationUpdates() {
 
@@ -174,16 +174,36 @@ public class GPSActivity extends AppCompatActivity {
                         // for ActivityCompat#requestPermissions for more details.
                         return;
                     }
-                    fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-                            locationCallback, Looper.getMainLooper());
+                }
 
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                        locationCallback, Looper.getMainLooper());
 
+                if (mapFragment != null) {
+                    mapFragment.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(@NonNull GoogleMap googleMap) {
+                            if (startPoint==0){
+                                prev=current;
+                                startPoint=1;
+                            }
+                            current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(current, 16);
+                            googleMap.animateCamera(update);
+                            googleMap.addPolyline((new PolylineOptions())
+                                    .add(prev, current).width(6).color(Color.BLUE)
+                                    .visible(true));
+                            prev=current;
+                            current = null;
+                        }
+                    });
                 }
             }
         };
     }
 
     private void stopLocationUpdates() {
+        fetchLastlocation();
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
 
