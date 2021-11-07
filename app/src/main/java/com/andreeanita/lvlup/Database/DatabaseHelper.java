@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -21,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("PRAGMA foreign_keys = ON;");
         db.execSQL("CREATE TABLE if not exists user(ID INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT, email TEXT, password TEXT)");
-        db.execSQL("CREATE TABLE if not exists activity(ID INTEGER PRIMARY KEY AUTOINCREMENT, datetime INTEGER,pace TEXT,time TEXT, " +
+        db.execSQL("CREATE TABLE if not exists user_activity(ID INTEGER PRIMARY KEY AUTOINCREMENT, datetime INTEGER,pace TEXT,time_elapsed TEXT, " +
                 "distance TEXT,user_id INTEGER NOT NULL,FOREIGN KEY (user_id) REFERENCES user (ID))");
     }
 
@@ -43,6 +44,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
+
+    public boolean Insert(LocalDateTime dateTime,Double pace, Double time_elapsed,Double distance,Integer user_id){
+        SQLiteDatabase sqLiteDatabase=this.getWritableDatabase();
+        ContentValues contentValues=new ContentValues();
+        contentValues.put("dateTime", String.valueOf(dateTime));
+        contentValues.put("pace",pace);
+        contentValues.put("time_elapsed",time_elapsed);
+        contentValues.put("distance",distance);
+        contentValues.put("user_id",user_id);
+        long result=sqLiteDatabase.insert("user_activity",null,contentValues);
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 
     public Boolean CheckEmail(String email){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();

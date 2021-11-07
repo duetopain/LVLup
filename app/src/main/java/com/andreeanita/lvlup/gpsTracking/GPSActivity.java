@@ -1,18 +1,21 @@
 package com.andreeanita.lvlup.gpsTracking;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 
 import com.andreeanita.lvlup.R;
+import com.andreeanita.lvlup.home.HomeActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -32,19 +35,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import java.util.List;
-
 public class GPSActivity extends AppCompatActivity {
 
 
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE = 200;
-    private Polyline gpsTrack;
-    private LatLng lastKnownLatLng;
+    //private Polyline gpsTrack;
+    //private LatLng lastKnownLatLng;
     private static MapFragment mapFragment;
     private LocationCallback locationCallback;
-    private int startPoint=0;
+    private static LatLng startPoint;
     private LatLng prev;
     private LatLng current;
 
@@ -59,11 +60,39 @@ public class GPSActivity extends AppCompatActivity {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastlocation();
 
+        ImageButton btnHome = (ImageButton) findViewById(R.id.homeGPSbutton);
+        btnHome.setOnClickListener(view -> openHome());
+
+        ImageButton btnMusic=(ImageButton) findViewById(R.id.musicGPSbutton);
+        btnMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO: openSpotify;
+            }
+        });
+
         Button btnStart = (Button) findViewById(R.id.startGPSButton);
         btnStart.setOnClickListener(v -> startLocationUpdates());
 
         Button btnStop = (Button) findViewById(R.id.stopGPSButton);
         btnStop.setOnClickListener(v -> stopLocationUpdates());
+
+        Button btnSaveActivity = (Button) findViewById(R.id.saveActivityGPSbutton);
+        btnSaveActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO: insert data in user_activity table
+            }
+        });
+
+        Button  btnDiscardActivity= (Button) findViewById(R.id.discardActivityGPSbutton);
+        btnDiscardActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPoint=null;
+                //remove polyline
+            }
+        });
     }
 
 
@@ -126,15 +155,13 @@ public class GPSActivity extends AppCompatActivity {
                 .setInterval(1000)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-                locationCallback, Looper.getMainLooper());
 
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
-                /*if (locationResult == null) {
+                if (locationResult == null) {
                     return;
-                }*/
+                }
                 for (Location location : locationResult.getLocations()) {
                     if (ActivityCompat.checkSelfPermission(GPSActivity.this,
                             Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -154,9 +181,9 @@ public class GPSActivity extends AppCompatActivity {
                         mapFragment.getMapAsync(new OnMapReadyCallback() {
                             @Override
                             public void onMapReady(@NonNull GoogleMap googleMap) {
-                                if (startPoint==0){
+                                if (startPoint==null){
                                     prev=current;
-                                    startPoint=1;
+                                    startPoint=current;
                                 }
                                 current = new LatLng(location.getLatitude(), location.getLongitude());
                                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(current, 25);
@@ -172,8 +199,8 @@ public class GPSActivity extends AppCompatActivity {
 
                 }
 
-                //fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-                                            //locationCallback, Looper.getMainLooper());
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest,
+                                            locationCallback, Looper.getMainLooper());
 
 
                 /*if (mapFragment != null) {
@@ -205,8 +232,13 @@ public class GPSActivity extends AppCompatActivity {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
     }
 
-    public void onLocationChanged(Location location) {
-        lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+    public void openHome() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        startActivity(intent);
+    }
+
+   /*public void onLocationChanged(Location location) {
+      lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         updateTrack();
     }
@@ -216,5 +248,5 @@ public class GPSActivity extends AppCompatActivity {
         points.add(lastKnownLatLng);
         gpsTrack.setPoints(points);
 
-    }
+    }*/
 }
