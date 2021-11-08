@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 
+import com.andreeanita.lvlup.MapsActivity;
 import com.andreeanita.lvlup.R;
 import com.andreeanita.lvlup.home.HomeActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -35,7 +37,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-public class GPSActivity extends AppCompatActivity {
+public class GPSActivity extends AppCompatActivity implements LocationListener {
 
 
     Location currentLocation;
@@ -72,7 +74,7 @@ public class GPSActivity extends AppCompatActivity {
         });
 
         Button btnStart = (Button) findViewById(R.id.startGPSButton);
-        btnStart.setOnClickListener(v -> startLocationUpdates());
+        btnStart.setOnClickListener(v -> openMapsActivity());
 
         Button btnStop = (Button) findViewById(R.id.stopGPSButton);
         btnStop.setOnClickListener(v -> stopLocationUpdates());
@@ -194,6 +196,8 @@ public class GPSActivity extends AppCompatActivity {
                                 prev=current;
                                 current = null;
                             }
+
+
                         });
                     }
 
@@ -235,6 +239,16 @@ public class GPSActivity extends AppCompatActivity {
     public void openHome() {
         Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
+    }
+
+    public void openMapsActivity() {
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+
     }
 
    /*public void onLocationChanged(Location location) {

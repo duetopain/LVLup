@@ -23,8 +23,8 @@
     <fragment
         android:id="@+id/mapFragment"
         class="com.google.android.gms.maps.MapFragment"
-        android:layout_width="366dp"
-        android:layout_height="448dp"
+        android:layout_width="335dp"
+        android:layout_height="295dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
