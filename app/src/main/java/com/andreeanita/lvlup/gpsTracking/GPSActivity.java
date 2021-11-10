@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 
-import com.andreeanita.lvlup.MapsActivity;
 import com.andreeanita.lvlup.R;
 import com.andreeanita.lvlup.home.HomeActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,13 +28,15 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class GPSActivity extends AppCompatActivity implements LocationListener {
 
@@ -50,6 +51,7 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
     private static LatLng startPoint;
     private LatLng prev;
     private LatLng current;
+    private GoogleMap googleMap;
 
 
     @Override
@@ -74,16 +76,22 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
         });
 
         Button btnStart = (Button) findViewById(R.id.startGPSButton);
-        btnStart.setOnClickListener(v -> openMapsActivity());
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openMapsActivity();
+            }
+        });
 
-        Button btnStop = (Button) findViewById(R.id.stopGPSButton);
-        btnStop.setOnClickListener(v -> stopLocationUpdates());
+        //Button btnStop = (Button) findViewById(R.id.stopGPSButton);
+        //btnStop.setOnClickListener(v -> stopLocationUpdates());
 
         Button btnSaveActivity = (Button) findViewById(R.id.saveActivityGPSbutton);
         btnSaveActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //TODO: insert data in user_activity table
+                openHome();
             }
         });
 
@@ -91,8 +99,6 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
         btnDiscardActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startPoint=null;
-                //remove polyline
             }
         });
     }
@@ -111,8 +117,8 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
         task.addOnSuccessListener(location -> {
             if (location != null) {
                 currentLocation = location;
-                /*Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + "," +
-                        currentLocation.getLongitude(), Toast.LENGTH_LONG).show();*/
+                Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + "," +
+                        currentLocation.getLongitude(), Toast.LENGTH_LONG).show();
 
 
                 if (mapFragment != null) {
@@ -124,7 +130,6 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
                             googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                             googleMap.addMarker(markerOptions);
-
                         }
                     });
                 }
@@ -183,18 +188,15 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
                         mapFragment.getMapAsync(new OnMapReadyCallback() {
                             @Override
                             public void onMapReady(@NonNull GoogleMap googleMap) {
-                                if (startPoint==null){
-                                    prev=current;
-                                    startPoint=current;
-                                }
+                                prev=current;
                                 current = new LatLng(location.getLatitude(), location.getLongitude());
                                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(current, 25);
                                 googleMap.animateCamera(update);
-                                googleMap.addPolyline((new PolylineOptions())
-                                        .add(prev, current).width(6).color(Color.BLUE)
-                                        .visible(true));
-                                prev=current;
-                                current = null;
+                                if(prev!=null) {
+                                    googleMap.addPolyline((new PolylineOptions())
+                                            .add(prev, current).width(6).color(Color.BLUE)
+                                            .visible(true));
+                                }
                             }
 
 
@@ -204,7 +206,7 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
                 }
 
                 fusedLocationProviderClient.requestLocationUpdates(locationRequest,
-                                            locationCallback, Looper.getMainLooper());
+                                            locationCallback, Looper.myLooper());
 
 
                 /*if (mapFragment != null) {
@@ -248,7 +250,16 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-
+        fetchLastlocation();
+        prev=current;
+        current = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(current, 25);
+        googleMap.animateCamera(update);
+        if(prev!=null) {
+            googleMap.addPolyline((new PolylineOptions())
+                    .add(prev, current).width(6).color(Color.BLUE)
+                    .visible(true));
+        }
     }
 
    /*public void onLocationChanged(Location location) {
