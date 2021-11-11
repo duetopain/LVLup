@@ -15,7 +15,7 @@
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.16"
+        app:layout_constraintHorizontal_bias="0.147"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timeTextView"
         app:layout_constraintVertical_bias="0.0" />
@@ -24,48 +24,35 @@
         android:id="@+id/mapFragment"
         class="com.google.android.gms.maps.MapFragment"
         android:layout_width="335dp"
-        android:layout_height="295dp"
+        android:layout_height="330dp"
+        android:layout_marginTop="80dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homeGPSbutton" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/startGPSButton"
-        android:layout_width="150dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/StartGPS"
-        app:layout_constraintEnd_toStartOf="@+id/stopGPSButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapFragment" />
-
-    <Button
-        android:id="@+id/stopGPSButton"
-        android:layout_width="150dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="50dp"
-        android:text="@string/StopGPS"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/startGPSButton"
         app:layout_constraintTop_toBottomOf="@+id/mapFragment" />
 
     <TextView
         android:id="@+id/averagePaceTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="40dp"
         android:text="@string/AveragePace"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.17"
+        app:layout_constraintHorizontal_bias="0.161"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/saveActivityGPSbutton" />
+        app:layout_constraintTop_toBottomOf="@+id/startGPSButton" />
 
     <TextView
         android:id="@+id/timeTextView"
@@ -74,34 +61,9 @@
         android:text="@string/Time"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintHorizontal_bias="0.138"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/averagePaceTextView" />
-
-    <Button
-        android:id="@+id/saveActivityGPSbutton"
-        android:layout_width="150dp"
-        android:layout_height="48dp"
-        android:text="@string/SaveActivity"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/discardActivityGPSbutton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/stopGPSButton" />
-
-    <Button
-        android:id="@+id/discardActivityGPSbutton"
-        android:layout_width="150dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="21dp"
-        android:text="@string/Discard"
-        app:layout_constraintBottom_toTopOf="@+id/averagePaceTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/saveActivityGPSbutton"
-        app:layout_constraintTop_toTopOf="@+id/saveActivityGPSbutton"
-        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/musicGPSbutton"
@@ -109,6 +71,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="28dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/mapFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_music_note_24" />
@@ -119,6 +83,8 @@
         android:layout_height="40dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="260dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/mapFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.302"
         app:layout_constraintStart_toStartOf="parent"

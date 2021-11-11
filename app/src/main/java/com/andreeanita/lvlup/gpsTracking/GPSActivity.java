@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -63,6 +65,7 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastlocation();
+        
 
         ImageButton btnHome = (ImageButton) findViewById(R.id.homeGPSbutton);
         btnHome.setOnClickListener(view -> openHome());
@@ -86,7 +89,7 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
         //Button btnStop = (Button) findViewById(R.id.stopGPSButton);
         //btnStop.setOnClickListener(v -> stopLocationUpdates());
 
-        Button btnSaveActivity = (Button) findViewById(R.id.saveActivityGPSbutton);
+        /*Button btnSaveActivity = (Button) findViewById(R.id.saveActivityGPSbutton);
         btnSaveActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,7 +103,7 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
             @Override
             public void onClick(View view) {
             }
-        });
+        });*/
     }
 
 
@@ -264,7 +267,6 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
 
    /*public void onLocationChanged(Location location) {
       lastKnownLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
         updateTrack();
     }
 

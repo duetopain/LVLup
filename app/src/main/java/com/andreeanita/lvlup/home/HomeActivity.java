@@ -36,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    /*@Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();
         inflater.inflate(R.menu.home_menu, menu);
@@ -53,14 +53,10 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.logoutItem:
                 Toast.makeText(this, "Logout selected", Toast.LENGTH_SHORT).show();
                 return true;
-
-            case R.id.historyItem:
-                Toast.makeText(this, "History selected", Toast.LENGTH_SHORT).show();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }*/
+    }
 
 
     public void openGPSActivity() {

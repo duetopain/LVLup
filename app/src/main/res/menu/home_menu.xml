@@ -8,10 +8,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/historyItem"
-        android:title="@string/historyMenuButton"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/logoutItem"
         android:title="@string/logOutMenuButton"
         app:showAsAction="never" />

@@ -1,7 +1,5 @@
 package com.andreeanita.lvlup.loginAndRegister;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,10 +8,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.andreeanita.lvlup.Database.DatabaseHelper;
 import com.andreeanita.lvlup.R;
-
-import com.andreeanita.lvlup.home.HomeActivity;
+import com.andreeanita.lvlup.gpsTracking.GPSActivity;
+import com.andreeanita.lvlup.gpsTracking.MapsActivity;
 
 public class Login extends AppCompatActivity {
      TextView register;
@@ -43,7 +43,7 @@ public class Login extends AppCompatActivity {
                 Boolean checklogin = databaseHelper.CheckLogin(email, password);
                 if(checklogin == true){
                     Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-                    openHome();
+                    openGPSActivity();
                 }else{
                     Toast.makeText(getApplicationContext(), "Invalid username or password", Toast.LENGTH_SHORT).show();
                 }
@@ -57,6 +57,10 @@ public class Login extends AppCompatActivity {
                 openRegister();
             }
         });
+
+        Intent intent = new Intent(Login.this, MapsActivity.class);
+        intent.putExtra("email", etEmail.getText().toString());
+        startActivity(intent);
     }
 
     public void openRegister() {
@@ -64,8 +68,8 @@ public class Login extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void openHome() {
-        Intent intent = new Intent(this, HomeActivity.class);
+    public void openGPSActivity() {
+        Intent intent = new Intent(this, GPSActivity.class);
         startActivity(intent);
     }
 

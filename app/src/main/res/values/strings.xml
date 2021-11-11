@@ -29,7 +29,6 @@
     <string name="AveragePace">Average Pace:</string>
     <string name="Time">Time:</string>
     <string name="Distance">Distance:</string>
-    <string name="StartGPS">Start</string>
     <string name="StopGPS">Stop</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="SaveActivity">Save Activity</string>
@@ -54,4 +53,5 @@
         type specimen book"
     </string>
     <string name="stopButton">STOP</string>
+    <string name="StartGPS">Start Running</string>
 </resources>
