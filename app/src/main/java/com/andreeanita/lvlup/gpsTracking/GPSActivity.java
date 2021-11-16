@@ -170,6 +170,7 @@ public class GPSActivity extends AppCompatActivity implements LocationListener {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 if (locationResult == null) {
+                    Toast.makeText(getApplicationContext(), "You're not moving", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 for (Location location : locationResult.getLocations()) {

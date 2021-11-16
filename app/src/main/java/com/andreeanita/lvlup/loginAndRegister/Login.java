@@ -15,10 +15,13 @@ import com.andreeanita.lvlup.R;
 import com.andreeanita.lvlup.gpsTracking.GPSActivity;
 import com.andreeanita.lvlup.gpsTracking.MapsActivity;
 
+import java.io.Serializable;
+
 public class Login extends AppCompatActivity {
-     TextView register;
-     EditText etEmail, etPassword;
-     Button login;
+    TextView register;
+    EditText etEmail, etPassword;
+    Button login;
+    static String email;
 
 
     @Override
@@ -30,21 +33,28 @@ public class Login extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        etEmail = (EditText)findViewById(R.id.editTextLoginEmail);
-        etPassword = (EditText)findViewById(R.id.editTextLoginPassword);
+        etEmail = (EditText) findViewById(R.id.editTextLoginEmail);
+        etPassword = (EditText) findViewById(R.id.editTextLoginPassword);
 
-        login = (Button)findViewById(R.id.buttonLogin);
+        login = (Button) findViewById(R.id.buttonLogin);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = etEmail.getText().toString();
+                email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
 
                 Boolean checklogin = databaseHelper.CheckLogin(email, password);
-                if(checklogin == true){
+                if (checklogin == true) {
                     Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
+
+                    /*Bundle bundle = new Bundle();
+                    bundle.putString("email", email);
+                    Intent intent = new Intent(Login.this, MapsActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);*/
+
                     openGPSActivity();
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Invalid username or password", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -58,9 +68,11 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        Intent intent = new Intent(Login.this, MapsActivity.class);
-        intent.putExtra("email", etEmail.getText().toString());
-        startActivity(intent);
+        //runtime error
+        /*Intent intent = new Intent(Login.this, MapsActivity.class);
+        String emailLogin=null;
+        intent.putExtra( "emailLogin", etEmail.getText().toString());
+        startActivity(intent);*/
     }
 
     public void openRegister() {

@@ -17,7 +17,6 @@ public class Register extends AppCompatActivity {
     TextView login;
     Button signUp;
     EditText etName, etEmail, etPassword, etConfirmPassword;
-
     DatabaseHelper databaseHelper;
 
     @Override
@@ -27,12 +26,12 @@ public class Register extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        etName = (EditText)findViewById(R.id.editTextRegisterName);
-        etEmail = (EditText)findViewById(R.id.editTextEmail);
-        etPassword = (EditText)findViewById(R.id.editTextPassword);
-        etConfirmPassword = (EditText)findViewById(R.id.editTextConfirmPassword);
+        etName = (EditText) findViewById(R.id.editTextRegisterName);
+        etEmail = (EditText) findViewById(R.id.editTextEmail);
+        etPassword = (EditText) findViewById(R.id.editTextPassword);
+        etConfirmPassword = (EditText) findViewById(R.id.editTextConfirmPassword);
 
-        signUp= (Button)findViewById(R.id.buttonRegister);
+        signUp = (Button) findViewById(R.id.buttonRegister);
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,14 +40,14 @@ public class Register extends AppCompatActivity {
                 String password = etPassword.getText().toString();
                 String confirmPassword = etConfirmPassword.getText().toString();
 
-                if(name.equals("") || email.equals("") || password.equals("") || confirmPassword.equals("")){
+                if (name.equals("") || email.equals("") || password.equals("") || confirmPassword.equals("")) {
                     Toast.makeText(getApplicationContext(), "Fields Required", Toast.LENGTH_SHORT).show();
-                }else{
-                    if(password.equals(confirmPassword)){
+                } else {
+                    if (password.equals(confirmPassword)) {
                         Boolean checkEmail = databaseHelper.CheckEmail(email);
-                        if(checkEmail == true){
+                        if (checkEmail == true) {
                             Boolean insert = databaseHelper.Insert(name, email, password);
-                            if(insert == true){
+                            if (insert == true) {
                                 Toast.makeText(getApplicationContext(), "Registered", Toast.LENGTH_SHORT).show();
                                 etName.setText("");
                                 etEmail.setText("");
@@ -56,10 +55,10 @@ public class Register extends AppCompatActivity {
                                 etConfirmPassword.setText("");
                                 openLogin();
                             }
-                        }else{
+                        } else {
                             Toast.makeText(getApplicationContext(), "Username already taken", Toast.LENGTH_SHORT).show();
                         }
-                    }else{
+                    } else {
                         Toast.makeText(getApplicationContext(), "Password does not match", Toast.LENGTH_SHORT).show();
                     }
                 }

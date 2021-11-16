@@ -1,5 +1,7 @@
 package com.andreeanita.lvlup.gpsTracking;
 
+import static com.andreeanita.lvlup.Database.DatabaseHelper.DATABASE_NAME;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -25,17 +27,20 @@ import androidx.fragment.app.FragmentActivity;
 import com.andreeanita.lvlup.Database.DatabaseHelper;
 import com.andreeanita.lvlup.R;
 import com.andreeanita.lvlup.databinding.ActivityMapsBinding;
+import com.andreeanita.lvlup.loginAndRegister.Login;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.util.Calendar;
 
 public class
@@ -57,6 +62,7 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationLis
     double distance;
     String pace;
     private LocationManager locationManager;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +72,8 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationLis
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        fetchLocation();
+        //fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        //fetchLocation();
 
         /*locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -100,6 +106,9 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationLis
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        fetchLocation();
+
         startDateTime = Calendar.getInstance().getTimeInMillis();
         /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDateTime startDateTime = LocalDateTime.now();
@@ -107,8 +116,15 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationLis
             dateTimeFormatter.format(startDateTime);
         }*/
 
-        DatabaseHelper databaseHelper=new DatabaseHelper(this);
-        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        /*Intent intent=getIntent();
+        Bundle bundle=intent.getExtras();
+        if (bundle!=null){
+            email=bundle.getString("email","Default");
+        }*/
+
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         Button stop = (Button) findViewById(R.id.stopButton);
         stop.setOnClickListener(new View.OnClickListener() {
@@ -131,29 +147,47 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationLis
                             distance = 0;
                         }
                         Toast.makeText(getApplicationContext(), "distance: " + distance + "m", Toast.LENGTH_SHORT).show();
-                        pace=calculatePace(distance,time);
+                        pace = calculatePace(distance, time);
 
-                        String email = getIntent().getStringExtra("email");
-                        String query = "SELECT ID from user WHERE email=" + email;
 
-                        Cursor cursor = db.rawQuery(query, null);
-                        // Move to first row
-                        cursor.moveToFirst();
+                        //fetch user id
+                        Intent intent = getIntent();
+                        Bundle bundle = intent.getExtras();
+                        if (bundle != null) {
+                            userEmail = bundle.getString("email", "Default");
+                        }
+
+                        //userEmail= getIntent().getStringExtra("email");
+                        //Toast.makeText(getApplicationContext(), "user id " + userEmail, Toast.LENGTH_SHORT).show();
+
+                        String query = "SELECT ID from user WHERE email=?";
+                        Cursor cursor = db.rawQuery(query,new String[] {userEmail});
+                        //cursor.moveToFirst();
+
                         @SuppressLint("Range")
-                        int userId = cursor.getInt(cursor.getColumnIndex("email"));
+                        int userId = cursor.getInt(cursor.getColumnIndex("userEmail"));
 
-                        image=saveMapPhoto();
+                        image = saveMapPhoto();
 
-                        databaseHelper.Insert(startDateTime,pace,timeElapsed,distance,image,userId);
-                        openGPSActivity();
+                        boolean insert = databaseHelper.Insert(startDateTime, pace, timeElapsed, distance, image, userId);
+                        if (insert == true) {
+                            Toast.makeText(getApplicationContext(), "Activity saved ", Toast.LENGTH_SHORT).show();
+                            startDateTime = 0;
+                            pace = null;
+                            timeElapsed = null;
+                            distance = 0;
+                            image = null;
+                            userId = 0;
+
+                            openGPSActivity();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Error saving activity", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                });
-
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                         deleteActivity();
-                        openGPSActivity();
                     }
                 });
 
@@ -229,6 +263,7 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationLis
     }
 
     private void deleteActivity() {
+        startDateTime=0;
         openGPSActivity();
     }
 
@@ -246,16 +281,16 @@ MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationLis
         return finalTime.toString();
     }
 
-    public String calculatePace(double distance,long time){
-        double pace=(time/1000)/distance;
-        double seconds=pace%60;
-        int minutes= Integer.parseInt(String.valueOf(pace/60));
-        StringBuilder finalPace=new StringBuilder();
+    public String calculatePace(double distance, long time) {
+        double pace = (time / 1000) / distance;
+        double seconds = pace % 60;
+        int minutes = Integer.parseInt(String.valueOf(pace / 60));
+        StringBuilder finalPace = new StringBuilder();
         finalPace.append(minutes);
         finalPace.append(":");
         finalPace.append(seconds);
         return finalPace.toString();
-     }
+    }
 
 
 }

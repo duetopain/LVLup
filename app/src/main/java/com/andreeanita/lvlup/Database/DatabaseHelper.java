@@ -15,20 +15,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("PRAGMA foreign_keys = ON;");
         db.execSQL("CREATE TABLE if not exists user(ID INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT, email TEXT, password TEXT)");
-        db.execSQL("CREATE TABLE if not exists user_activity(ID INTEGER PRIMARY KEY AUTOINCREMENT, datetime INTEGER,pace TEXT,time_elapsed TEXT, " +
-                "distance TEXT,image BLOB, user_id INTEGER NOT NULL,FOREIGN KEY (user_id) REFERENCES user (ID))");
+        db.execSQL("CREATE TABLE if not exists user_activity(ID INTEGER PRIMARY KEY AUTOINCREMENT, datetime INTEGER,pace TEXT,time_elapsed TEXT, distance TEXT,image BLOB, user_id INTEGER NOT NULL,FOREIGN KEY (user_id) REFERENCES user (ID))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF exists user");
+        db.execSQL("DROP TABLE IF exists user_activity");
+        onCreate(db);
     }
 
     public boolean Insert(String name, String email, String password){
